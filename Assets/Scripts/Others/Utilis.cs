@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class Utilis
 {
-	public static IEnumerator PlayAnimationSetStateWhenFinished(GameObject parent,Animator animator, string clipName, bool activeStateAtTheEnd)
+	public static IEnumerator PlayAnimationSetStateWhenFinished(GameObject parent,Animator animator, string clipName, bool activeStateAtTheEnd = true)
 	{
 		animator.Play(clipName);
 		var animationLength = animator.GetCurrentAnimatorStateInfo(0).length;

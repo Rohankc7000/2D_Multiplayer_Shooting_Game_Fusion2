@@ -3,9 +3,14 @@ using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 {
+	public event Action OnStartedRunner;
+	public event Action OnStartedRunnerConnection;
+	public event Action OnPlayerJoinedSuccessfully;
+
 	[SerializeField] private NetworkRunner networkRunnerPrefab;
 
 	private NetworkRunner networkRunnerInstance;
@@ -13,6 +18,8 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
 	public async void StartGame(GameMode mode, string roomName)
 	{
+		OnStartedRunnerConnection?.Invoke();
+
 		if (networkRunnerInstance == null)
 		{
 			networkRunnerInstance = Instantiate(networkRunnerPrefab);
@@ -38,6 +45,11 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 		{
 			Debug.LogError(result.ShutdownReason);
 		}
+	}
+
+	public void ShutDownRunner()
+	{
+		networkRunnerInstance.Shutdown();
 	}
 
 	public void OnConnectedToServer(NetworkRunner runner)
@@ -93,6 +105,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
 		Debug.Log($"OnPlayerJoined called | Player: {player}");
+		OnPlayerJoinedSuccessfully?.Invoke();
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -128,6 +141,8 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 	public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
 	{
 		Debug.Log($"OnShutdown called | Reason: {shutdownReason}");
+		const string LOBBY_SCENE = "Lobby";
+		SceneManager.LoadScene(LOBBY_SCENE);
 	}
 
 	public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
