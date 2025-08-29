@@ -1,5 +1,6 @@
 using Fusion;
 using Fusion.Sockets;
+using Fusion.Addons.Physics;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,9 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 			networkRunnerInstance = Instantiate(networkRunnerPrefab);
 		}
 
+		var simulatePhysic2D = gameObject.AddComponent<RunnerSimulatePhysics2D>();
+		simulatePhysic2D.ClientPhysicsSimulation = ClientPhysicsSimulation.SimulateAlways;
+
 		networkRunnerInstance.AddCallbacks(this);
 		networkRunnerInstance.ProvideInput = true;
 
@@ -33,7 +37,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 			GameMode = mode,
 			SessionName = roomName,
 			PlayerCount = 4,
-			SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>()
+			SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>(),
 		};
 		var result = await networkRunnerInstance.StartGame(startGameArgs);
 		if (result.Ok)

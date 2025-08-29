@@ -33,4 +33,5 @@ public class CreateNickNamePanel : LobbyPanelBase
 			lobbyUIManager.ShowPanel(LobbyPanelType.MiddleSectionPanel);
 		}
 	}
+
 }
